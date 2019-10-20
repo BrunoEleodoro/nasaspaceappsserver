@@ -4,6 +4,7 @@ var user = require('./users/users')
 var desafio = require('./desafio/desafio')
 var empresa = require('./empresa/empresa')
 var produto = require('./produto/produto')
+var desafio_cliente = require('./desafio_cliente/desafio_cliente')
 
 var fs = require('fs')
 
@@ -131,6 +132,38 @@ module.exports = (req, res) => {
                     res.json({
                         status: 200,
                         response: await produto.listarProdutos({})
+                    })
+                } else if (req.body.route == "/desafio_cliente/salvarDesafioCliente") {
+                    if (await desafio_cliente.salvarDesafioCliente(req.body.body)) {
+                        res.json({
+                            status: 200,
+                            response: req.body.body
+                        })
+                    } else {
+                        failure(res)
+                    }
+                } else if (req.body.route == "/desafio_cliente/atualizarDesafioCliente") {
+                    if (await desafio_cliente.atualizarDesafioCliente(req.body.id, req.body.body)) {
+                        res.json({
+                            status: 200,
+                            response: req.body.body
+                        })
+                    } else {
+                        failure(res)
+                    }
+                } else if (req.body.route == "/desafio_cliente/removerDesafioCliente") {
+                    if (await desafio_cliente.removerDesafioCliente(req.body.id)) {
+                        res.json({
+                            status: 200,
+                            response: 'removed'
+                        })
+                    } else {
+                        failure(res)
+                    }
+                } else if (req.body.route == "/desafio_cliente/listarDesafioClientes") {
+                    res.json({
+                        status: 200,
+                        response: await desafio_cliente.listarDesafioClientes(req.body.email)
                     })
                 } else {
                     res.json({
