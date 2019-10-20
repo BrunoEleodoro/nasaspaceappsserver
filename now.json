@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "name": "example2",
+    "builds": [
+        {
+            "src": "*.js",
+            "use": "@now/node"
+        }
+    ],
+    "env": {
+        "VARIABLE_NAME": "SUPER_SECRET_THING"
+    }
+}
