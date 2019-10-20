@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var request = require('request')
 const multipart = require('connect-multiparty');
+const formData = require('express-form-data');
 const multipartMiddleware = multipart();
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -13,7 +14,13 @@ cloudinary.config({
 })
 var port = process.env.PORT || 3001;
 
-app.use(express.json());
+var bodyParser = require('body-parser');
+// app.use(bodyParser.json());
+var jsonParser = bodyParser.json()
+
+app.use(bodyParser.json())
+app.use(formData.parse())
+app.use(bodyParser.urlencoded({ limit: 1024 * 1024 * 20, extended: false, parameterLimit: 1000000 }))
 
 app.get('/', (req, res) => {
     res.json({
@@ -21,9 +28,9 @@ app.get('/', (req, res) => {
     })
 });
 
-app.post('/upload', multipartMiddleware, async (req, res) => {
-    if (req.query.token != undefined) {
-        request("https://serverless-auth.brunoeleodoro.now.sh?type=verify&token=" + req.query.token, async function (error, response, body) {
+app.post('/upload', async (req, res) => {
+    if (req.headers.authorization != undefined) {
+        request("https://serverless-auth-9d635e953080667d0fb696be75697428.brunoeleodoroecoquest.now.sh?type=verify&token=" + req.headers.authorization.split(' ')[1], async function (error, response, body) {
             console.log(body)
             if (error) {
                 error_response(res);
@@ -98,5 +105,5 @@ function error_response(res) {
 }
 
 app.listen(port, function () {
-    console.log('Running on port=' + 3000);
+    console.log('Running on port=' + port);
 });
